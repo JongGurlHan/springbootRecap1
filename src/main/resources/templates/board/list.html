@@ -20,7 +20,17 @@
 
     <div class="container">
         <h2>게시판</h2>
-        <div>총 건수 : <span th:text="${#lists.size(boards)}"></span></div>
+        <div>총 건수 : <span th:text="${boards.totalElements}"></span></div>
+
+        <form class="form-inline d-flex justify-content-end" method="GET" th:action="@{/board/list}">
+            <div class="form-group mx-sm-3 mb-2">
+                <label for="searchText" class="sr-only">검색</label>
+<!--                알아서 파라미터가 전달된다.-->
+                <input type="text" class="form-control" id="searchText" name="searchText" th:value="${param.searchText}">
+            </div>
+            <button type="submit" class="btn btn-light mb-2">검색</button>
+        </form>
+
         <table class="table table-striped">
             <thead>
             <tr>
@@ -37,6 +47,23 @@
             </tr>
             </tbody>
         </table>
+<!--jpa에서는 페이지가 0부터 시작된다-->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item"  th:classappend="${1 == boards.pageable.pageNumber + 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/board/list(page=${boards.pageable.pageNumber -1 }, searchText = ${param.searchText})}">Previous</a>
+                </li>
+<!--                numbers.sequence: 첫번째 값과 마지막 값 지정하면  첫번째 값부터 마지막 값 까지 증가한다.-->
+                <li class="page-item" th:classappend="${i == boards.pageable.pageNumber + 1} ? 'disabled'" th:each="i : ${#numbers.sequence(startPage, endPage)}">
+                    <a class="page-link" href="#" th:href="@{/board/list(page=${i -1 } , searchText = ${param.searchText})}" th:text="${i}">1</a>
+                </li>
+
+                <li class="page-item" th:classappend="${boards.totalPages == boards.pageable.pageNumber + 1} ? 'disabled'">
+                    <a class="page-link" href="# "th:href="@{/board/list(page=${boards.pageable.pageNumber +1 }, searchText = ${param.searchText} )}">Next</a>
+                </li>
+            </ul>
+        </nav>
+
         <div class="text-right">
             <a type="button" class="btn btn-primary" th:href="@{/board/form}">쓰기</a>
         </div>
