@@ -29,8 +29,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()//api테스트 위해서 설정, 보안에는 안좋다.
                 .authorizeRequests()
-                    .antMatchers("/", "/account/register", "/css/**").permitAll() //누구나 접근할수 있는 url
+                    .antMatchers("/", "/account/register", "/css/**", "/api/**").permitAll() //누구나 접근할수 있는 url
                     .anyRequest().authenticated() //어떤 요청이라도 authenticated 돼야한다.
                     .and()
                 .formLogin() //authenticated안된 상태에서 다른 페이지 가려하면
@@ -63,7 +64,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
-
         return new BCryptPasswordEncoder();
     }
 

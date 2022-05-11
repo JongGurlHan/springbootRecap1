@@ -31,7 +31,4 @@ public class AccountController {
         userService.save(user);
         return "redirect:/";
     }
-
-
-
 }

@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-
-
     @Autowired
     private UserRepository userRepository;
 
@@ -26,11 +24,11 @@ public class UserService {
         // 2.회원 활성화 여부 - 기본적으로 enabled로 설정
         user.setEnabled(true);
 
-
         // 3. role정보 추가
         Role role = new Role();
         role.setId(1L);
         user.getRoles().add(role);
+
         return userRepository.save(user);
     }
 }

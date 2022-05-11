@@ -1,5 +1,6 @@
 package com.jghan.myhome.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ public class Role {
     private String name; //권한명
 
     @ManyToMany(mappedBy = "roles") //mappedBy: User클래스에 있는 컬럼명이 된다.
+    @JsonIgnore //role을 갖고 있는 사용자는 표시x
     private List<User> users;
-
 
 }

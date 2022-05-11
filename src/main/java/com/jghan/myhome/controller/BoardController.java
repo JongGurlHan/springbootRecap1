@@ -2,12 +2,15 @@ package com.jghan.myhome.controller;
 
 import com.jghan.myhome.model.Board;
 import com.jghan.myhome.repository.BoardRepository;
+import com.jghan.myhome.service.BoardService;
 import com.jghan.myhome.validator.BoardValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +25,9 @@ public class BoardController {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private BoardService boardService;
 
     @Autowired
     private BoardValidator boardValidator;
@@ -56,14 +62,16 @@ public class BoardController {
     }
 
     @PostMapping("/form")
-    public String greetingSubmit(@Valid Board board, BindingResult bindingResult){
+    public String postForm(@Valid Board board, BindingResult bindingResult, Authentication authentication){
         boardValidator.validate(board, bindingResult);
-
+        //인증정보가 담긴다.
         if(bindingResult.hasErrors()) {
             return "board/form";
         }
+//        Authentication a = SecurityContextHolder.getContext().getAuthentication(); :서비스 클래스 에서 인증정보 가져오고 싶을때
 
-        boardRepository.save(board);
+        String username = authentication.getName();
+        boardService.save(username, board);
         return "redirect:/board/list";
     }
 
