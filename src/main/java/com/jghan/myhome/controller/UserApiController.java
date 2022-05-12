@@ -3,6 +3,7 @@ package com.jghan.myhome.controller;
 import com.jghan.myhome.model.Board;
 import com.jghan.myhome.model.User;
 import com.jghan.myhome.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.StringUtils;
@@ -11,14 +12,24 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@Slf4j
 public class UserApiController {
 
     @Autowired
     private UserRepository repository;
 
     @GetMapping("/users")
-    List<User> all() {
-        return repository.findAll();
+    List<User> all(@RequestParam(required = false)String method, @RequestParam(required = false)String text) {
+        List<User> users = null;
+        if("query".equals(method)){
+            users = repository.findByUsernameQuery(text);
+        }else if("nativeQuery".equals(method)){
+            users = repository.findByUsernameNativeQuery(text);
+        }else{
+            users = repository.findAll();
+        }
+
+        return users;
     }
 
     @PostMapping("/users")
